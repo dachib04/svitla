@@ -4,7 +4,7 @@ A minimal Data Room app (folders/files CRUD) with a React SPA frontend and Flask
 Deployed on AWS: Elastic Beanstalk (backend), RDS Postgres (DB), S3 (uploads + static site).
 
 ## Live Demo
-- Backend API: https://dataroom-env.eba-2maibhrb.eu-north-1.elasticbeanstalk.com
+- Backend API: http://dataroom-env.eba-2maibhrb.eu-north-1.elasticbeanstalk.com
 - Frontend: http://svitla-frontend-dachi.s3-website.eu-north-1.amazonaws.com
 
 ## Stack
