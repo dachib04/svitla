@@ -5,7 +5,7 @@ Deployed on AWS: Elastic Beanstalk (backend), RDS Postgres (DB), S3 (uploads + s
 
 ## Live Demo
 - Backend API: https://dataroom-env.eba-2maibhrb.eu-north-1.elasticbeanstalk.com
-- Frontend: https://YOUR_S3_SITE_URL/
+- Frontend: http://svitla-frontend-dachi.s3-website.eu-north-1.amazonaws.com
 
 ## Stack
 - Frontend: React (TypeScript optional), build hosted on S3 (optional CloudFront)
