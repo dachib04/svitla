@@ -25,6 +25,7 @@ function FileManager({ onLogout }: { onLogout: () => void }) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
 
+  const [progress, setProgress] = useState(0);
 
   // Search state
   const [searchTerm, setSearchTerm] = useState("");
@@ -119,27 +120,40 @@ const fetchFolder = async (id: number, resetPath = false) => {
   };
 
   // Upload file
-  const uploadFile = async () => {
-    if (!file || !currentFolder) return;
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("folder_id", currentFolder.id.toString());
-      const res = await api.post("/files", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setCurrentFolder({
-        ...currentFolder,
-        files: [...(currentFolder.files || []), res.data],
-      });
-      setFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    } catch (error) {
-      console.error("File upload error:", error);
+
+
+  // Upload file with progress
+const uploadFile = async () => {
+  if (!file || !currentFolder) return;
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder_id", currentFolder.id.toString());
+
+    await api.post("/files", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      onUploadProgress: (progressEvent: any) => {
+        const percent = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        setProgress(percent);
+      },
+    });
+
+    // Refresh folder after upload
+    const res = await api.get(`/folders/${currentFolder.id}`);
+    setCurrentFolder(res.data);
+
+    // Reset
+    setFile(null);
+    setProgress(0);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
     }
-  };
+  } catch (error) {
+    console.error("File upload error:", error);
+  }
+};
 
   // Delete file
   const deleteFile = async (id: number) => {
@@ -393,6 +407,13 @@ const fetchFolder = async (id: number, resetPath = false) => {
                     Upload
                   </button>
                 </div>
+                {progress > 0 && (
+                  <div style={{ width: "100%", marginTop: "10px" }}>
+                    <p>Uploading: {progress}%</p>
+                    <progress value={progress} max="100" style={{ width: "100%" }}></progress>
+                  </div>
+                )}
+
 
               {currentFolder.files?.length ? (
                 viewMode === "list" ? (

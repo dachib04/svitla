@@ -134,6 +134,6 @@ def preview_file(file_id):
     elif ext.endswith((".txt", ".log")):
         mimetype = "text/plain"
     else:
-        mimetype = None  # let browser guess
+        return send_file(file.path, as_attachment=True) # let browser guess
 
     return send_file(file.path, mimetype=mimetype, as_attachment=False)
